@@ -1,0 +1,82 @@
+<!DOCTYPE html> <html> <head> <meta charset="utf-8" />
+  <style>
+    * { margin: 0;padding: 0; }
+    body { background: #000; }
+    #c { display: block; width: 100vmin; margin: 0 auto; }
+  </style>
+</head> <body> <canvas id="c"></canvas>
+<script>
+  // Your drawing commands reference is now at
+  // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D
+
+  // Setup, obtain canvas
+  const W = 1080, H = 1080, HW = .5 * W, HH = .5 * H;
+  const canvas = document.getElementById('c');
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+
+  ctx.lineJoin = 'round';
+  ctx.lineCap = 'butt'; // lol
+
+  function draw() {
+    const millis = Date.now(); // time in milliseconds
+
+    // You can fill a rect directly to clear the screen
+    ctx.fillStyle = '#036';
+    ctx.fillRect(0, 0, W, H);
+
+    // generative stuff goes here
+    const t = millis * 0.001, wobl_x = 80 * Math.sin(t), wobl_y = 25 * Math.cos(t);
+    const points = [
+      {x: 150 + wobl_x, y: 150 - wobl_y}, 
+      {x: 700 - wobl_y, y: 300 + wobl_x}, 
+      {x: 400 + wobl_x, y: 900 + wobl_y}
+    ];
+
+    // make the path (tip: put this in a function)
+    ctx.beginPath(); // see important note below
+    ctx.moveTo(points[0].x, points[0].y);
+    for (let i = 1; i < points.length; i++) {
+      ctx.lineTo(points[i].x, points[i].y);
+    }
+    ctx.closePath(); // Optional, only needed if you stroke a closed shape
+
+    // You can add even more subpaths here
+    // ctx.beginPath();
+    // ...
+
+    // And then fill and/or stroke them all current subpaths at once. You can
+    // do this in any order, or even stroke several times with different 
+    // lineWidth and color, then fill, etc.
+
+    // You can set the styles any time, affecting the next call(s) to fill or stroke
+    ctx.fillStyle = '#330066'; // or 'rgba(51, 0, 102, 1.0)'
+    ctx.fill();
+
+    ctx.strokeStyle = '#990066'; // or 'hsla(230, 100%, 75%, 0.4)'
+    ctx.lineWidth = 25.0;
+    ctx.stroke();
+
+    ctx.strokeStyle = '#f9f'; // equivalent to #ff99ff
+    ctx.lineWidth = 5.0;
+    ctx.stroke();
+    // order matters; try moving the fill command after the two stroke commands.
+
+    // this will wait for the next screen refresh and call draw again
+    requestAnimationFrame(draw);
+  }
+  // don't forget to call draw for the first time, to get it going
+  draw();
+
+  // IMPORTANT: All path commands keep adding segments to the "current path", 
+  // even if you've already filled or stroked it. Always call beginPath when 
+  // you start making it, this clears the current path. Otherwise the paths 
+  // from the previous frame could be there. It'll try to fill and stroke the
+  // accumulating paths from previous frames, and your framerate plummets.
+
+  // Drawing a circle is one of the few things that's kind of weird using Canvas,
+  // so here's a nice function to do just that.
+  function draw_circle(ctx, x, y, r) {
+    ctx.moveTo(x + r, y); ctx.arc(x, y, r, 0, TAU); 
+  }
+</script></body></html>
