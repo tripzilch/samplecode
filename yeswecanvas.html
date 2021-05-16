@@ -76,6 +76,7 @@
 
   // Drawing a circle is one of the few things that's kind of weird using Canvas,
   // so here's a nice function to do just that.
+  const TAU = Math.PI * 2;
   function draw_circle(ctx, x, y, r) {
     ctx.moveTo(x + r, y); ctx.arc(x, y, r, 0, TAU); 
   }
