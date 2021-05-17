@@ -6,7 +6,7 @@
   </style>
 </head> <body> <canvas id="c"></canvas>
 <script>
-  // Your drawing commands reference is now at
+  // Your drawing commands reference is now at MDN:
   // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D
 
   // Setup, obtain canvas
@@ -15,9 +15,16 @@
   canvas.width = W; canvas.height = H;
   const ctx = canvas.getContext('2d');
 
+  // Read up on options for lineJoin and lineCap in the reference. However, the
+  // default lineJoin of "miter" sometimes tends to produce artifacts, and IMHO
+  // just is not the most suitable for generative purposes.
   ctx.lineJoin = 'round';
   ctx.lineCap = 'butt'; // lol
-
+  
+  // Other setup stuff goes here.
+  
+  // While the setup stuff doesn't (need to) go in a function, the drawing of
+  // course does, because it needs to be called every frame:
   function draw() {
     const millis = Date.now(); // time in milliseconds
 
@@ -41,12 +48,13 @@
     }
     ctx.closePath(); // Optional, only needed if you stroke a closed shape
 
-    // You can add even more subpaths here
-    // ctx.beginPath();
-    // ...
+    // You can add even more subpaths here, but they don't start with
+    // ctx.beginPath(), because that clears the current list. Simply move
+    // without drawing using ctx.moveTo, and draw more lines with lineTo.
+    // (also see the important note below)
 
-    // And then fill and/or stroke them all current subpaths at once. You can
-    // do this in any order, or even stroke several times with different 
+    // You can then fill and/or stroke all subpaths at once. You can do fill
+    // and/or stroke in any order, or even stroke several times with different 
     // lineWidth and color, then fill, etc.
 
     // You can set the styles any time, affecting the next call(s) to fill or stroke
@@ -57,7 +65,7 @@
     ctx.lineWidth = 25.0;
     ctx.stroke();
 
-    ctx.strokeStyle = '#f9f'; // equivalent to #ff99ff
+    ctx.strokeStyle = '#f9f'; // equivalent to '#ff99ff'
     ctx.lineWidth = 5.0;
     ctx.stroke();
     // order matters; try moving the fill command after the two stroke commands.
