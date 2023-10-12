@@ -3,20 +3,29 @@
     * { margin: 0;padding: 0; }
     body { background: #000; }
     #c { display: block; width: 100vmin; margin: 0 auto; }
+    /* you might want to change this CSS to something more mobile-friendly / responsive */
   </style>
 </head> <body> <canvas id="c"></canvas>
 <script>
   // Your drawing commands reference is now at MDN:
   // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D
+  // and for most p5 math functions:
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math
+  // similarly it might be worth reading up on Arrays and Strings, they have loads of useful methods
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String
 
   // Setup, obtain canvas
-  const W = 1080, H = 1080, HW = .5 * W, HH = .5 * H;
-  const canvas = document.getElementById('c');
+  let W = 1080, H = 1080; // canvas dimensions pixels
+  // let W = innerWidth, H = innerHeight; // use this if you want to fill the whole screen
+  // W *= devicePixelRatio; H *= devicePixelRatio; // also do this if you want to be adaptive to high dpi screens
+  let HW = .5 * W, HH = .5 * H; // half width/height useful for centering stuff
+  let canvas = document.getElementById('c');
   canvas.width = W; canvas.height = H;
-  const ctx = canvas.getContext('2d');
+  let ctx = canvas.getContext('2d'); // this is the drawingContext object that contains all the canvas drawing methods
 
-  // Read up on options for lineJoin and lineCap in the reference. However, the
-  // default lineJoin of "miter" sometimes tends to produce artifacts, and IMHO
+  // Read up on options for lineJoin and lineCap in the canvas reference. 
+  // The default lineJoin of "miter" sometimes tends to produce artifacts, and IMHO
   // just is not the most suitable for generative purposes.
   ctx.lineJoin = 'round';
   ctx.lineCap = 'butt'; // lol
@@ -26,10 +35,14 @@
   // While the setup stuff doesn't (need to) go in a function, the drawing of
   // course does, because it needs to be called every frame:
   function draw() {
-    const millis = Date.now(); // time in milliseconds
+    const millis = performance.now(); // time in milliseconds since script started
 
     // You can fill a rect directly to clear the screen
-    ctx.fillStyle = '#036';
+    ctx.fillStyle = '#036'; // colours can be specified as any valid CSS colour, 
+    // which includes many different (and useful) colour spaces. See:
+    // https://developer.mozilla.org/en-US/docs/Web/CSS/color_value
+    // https://developer.mozilla.org/en-US/docs/Web/CSS/color_value/color
+    // it's also got HSL if you like that, but there are even better ones!
     ctx.fillRect(0, 0, W, H);
 
     // generative stuff goes here
